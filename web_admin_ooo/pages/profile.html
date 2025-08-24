@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شؤون الطلاب - الحساب الشخصي</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- الشريط العلوي -->
+        <header class="header">
+            <div id="userInfo" class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <div id="userName">المستخدم</div>
+                    <div id="userId" style="font-size: 14px; opacity: 0.8;">رقم الموظف</div>
+                </div>
+            </div>
+            
+            <div class="page-title">
+                الحساب الشخصي
+            </div>
+            
+            <div class="header-actions">
+                <button onclick="goBack()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </header>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <!-- معلومات الحساب -->
+            <section class="profile-section">
+                <div class="collapsible-header" onclick="toggleProfileSection()">
+                    <h2><i class="fas fa-user-circle"></i> عرض معلومات الحساب</h2>
+                    <i class="fas fa-chevron-down toggle-icon" id="profileToggleIcon"></i>
+                </div>
+                <div class="profile-card collapsible-content" id="profileContent" style="display: block;">
+                    <div class="profile-info">
+                        <div class="info-row">
+                            <label>الاسم الكامل:</label>
+                            <span id="profileName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <label>رقم الموظف:</label>
+                            <span id="profileId">-</span>
+                        </div>
+                        <div class="info-row">
+                            <label>الدور الوظيفي:</label>
+                            <span id="profileRole">-</span>
+                        </div>
+                        <div class="info-row">
+                            <label>تاريخ آخر تسجيل دخول:</label>
+                            <span id="lastLogin">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- تغيير كلمة المرور -->
+            <section class="password-section">
+                <div class="collapsible-header" onclick="togglePasswordSection()">
+                    <h2><i class="fas fa-key"></i> عرض تغيير كلمة المرور</h2>
+                    <i class="fas fa-chevron-down toggle-icon" id="passwordToggleIcon"></i>
+                </div>
+                <div class="password-card collapsible-content" id="passwordContent" style="display: none;">
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">كلمة المرور الحالية:</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">كلمة المرور الجديدة:</label>
+                            <input type="password" id="newPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">تأكيد كلمة المرور الجديدة:</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> حفظ التغييرات
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> إلغاء
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- إعدادات الحساب -->
+            <section class="settings-section">
+                <div class="collapsible-header" onclick="toggleSettingsSection()">
+                    <h2><i class="fas fa-cog"></i> عرض إعدادات الحساب</h2>
+                    <i class="fas fa-chevron-down toggle-icon" id="settingsToggleIcon"></i>
+                </div>
+                <div class="settings-card collapsible-content" id="settingsContent" style="display: none;">
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="emailNotifications" checked>
+                            تلقي إشعارات البريد الإلكتروني
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="smsNotifications">
+                            تلقي إشعارات الرسائل النصية
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoLogout" checked>
+                            تسجيل الخروج التلقائي بعد فترة عدم نشاط
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- تحميل ملفات JavaScript -->
+    <script src="../js/page_guard.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // إعداد صفحة الحساب الشخصي
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من وجود المستخدم في التخزين المحلي
+            const savedUser = localStorage.getItem('currentUser');
+            if (!savedUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            const currentUser = JSON.parse(savedUser);
+            setupProfilePage(currentUser);
+            
+            // تعيين أيقونة قسم معلومات الحساب (مفتوح افتراضياً)
+            const profileIcon = document.getElementById('profileToggleIcon');
+            profileIcon.classList.remove('fa-chevron-down');
+            profileIcon.classList.add('fa-chevron-up');
+        });
+
+        // إعداد صفحة الحساب الشخصي
+        function setupProfilePage(currentUser) {
+            // عرض معلومات المستخدم في الرأس
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userId').textContent = 'رقم الموظف: ' + currentUser.id;
+            
+            // عرض معلومات الحساب
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileId').textContent = currentUser.id;
+            document.getElementById('profileRole').textContent = getRoleText(currentUser.role);
+            document.getElementById('lastLogin').textContent = new Date().toLocaleDateString('ar-SA');
+            
+            // إعداد نموذج تغيير كلمة المرور
+            setupPasswordForm(currentUser);
+        }
+
+        // إعداد نموذج تغيير كلمة المرور
+        function setupPasswordForm(currentUser) {
+            const form = document.getElementById('changePasswordForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // التحقق من كلمة المرور الحالية
+                if (currentPassword !== currentUser.password) {
+                    alert('كلمة المرور الحالية غير صحيحة');
+                    return;
+                }
+                
+                // التحقق من تطابق كلمة المرور الجديدة
+                if (newPassword !== confirmPassword) {
+                    alert('كلمة المرور الجديدة وتأكيدها غير متطابقين');
+                    return;
+                }
+                
+                // التحقق من طول كلمة المرور
+                if (newPassword.length < 6) {
+                    alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                    return;
+                }
+                
+                // تحديث كلمة المرور
+                currentUser.password = newPassword;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // تحديث كلمة المرور في بيانات الموظفين (إذا كانت متاحة)
+                if (typeof employees !== 'undefined' && employees[currentUser.id]) {
+                    employees[currentUser.id].password = newPassword;
+                }
+                
+                alert('تم تغيير كلمة المرور بنجاح');
+                form.reset();
+            });
+        }
+
+        // الحصول على نص الدور
+        function getRoleText(role) {
+            const roleTexts = {
+                'admin': 'مدير النظام',
+                'dean': 'عميد',
+                'department_head': 'رئيس قسم',
+                'student_affairs': 'شؤون طلاب',
+                'finance': 'المالية',
+                'archive': 'الأرشيف',
+                'control': 'الكنترول'
+            };
+            return roleTexts[role] || role;
+        }
+
+        // العودة للصفحة السابقة
+        function goBack() {
+            // التحقق من وجود المستخدم
+            const savedUser = localStorage.getItem('currentUser');
+            if (!savedUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            const currentUser = JSON.parse(savedUser);
+            
+            // توجيه المستخدم للصفحة المخصصة حسب دوره
+            const rolePages = {
+                'admin': 'admin.html',
+                'dean': 'dean.html',
+                'department_head': 'department_head.html',
+                'student_affairs': 'student_affairs.html',
+                'finance': 'finance.html',
+                'archive': 'archive.html',
+                'control': 'control.html'
+            };
+            
+            const targetPage = rolePages[currentUser.role] || '../index.html';
+            window.location.href = targetPage;
+        }
+
+        // تم حذف دالة logout لتجنب التداخل مع page_guard.js
+
+        // تبديل عرض قسم معلومات الحساب
+        function toggleProfileSection() {
+            toggleSection('profileContent', 'profileToggleIcon');
+        }
+
+        // تبديل عرض قسم تغيير كلمة المرور
+        function togglePasswordSection() {
+            toggleSection('passwordContent', 'passwordToggleIcon');
+        }
+
+        // تبديل عرض قسم إعدادات الحساب
+        function toggleSettingsSection() {
+            toggleSection('settingsContent', 'settingsToggleIcon');
+        }
+
+        // دالة عامة لتبديل عرض الأقسام
+        function toggleSection(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+    </script>
+</body>
+</html>

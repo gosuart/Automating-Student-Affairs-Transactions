@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شؤون الطلاب- الماليه</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <!-- الشريط العلوي -->
+        <header class="header">
+            <div id="userInfo" class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div>
+                    <div id="userName"> المالية</div>
+                    <div id="userId" style="font-size: 14px; opacity: 0.8;">رقم الموظف</div>
+                </div>
+            </div>
+            
+            <div class="page-title">
+                لوحة شؤون الطلاب
+            </div>
+            
+            <div class="header-actions">
+                <button onclick="goToProfile()" class="btn btn-secondary">
+                    <i class="fas fa-user"></i> الحساب الشخصي
+                </button>
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </header>
+
+        <!-- قسم إدارة الطلبات -->
+        <section class="management-section">
+            <div class="section-header">
+                <h3><i class="fas fa-file-alt"></i> إدارة الطلبات</h3>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="refreshRequests()">
+                        <i class="fas fa-sync-alt"></i> تحديث
+                    </button>
+                </div>
+            </div>
+
+            <!-- قسم الفلترة والبحث -->
+            <div class="filters-section">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="requestStatusFilter">حالة الطلب:</label>
+                        <select id="requestStatusFilter" onchange="filterRequests()">
+                            <option value="">جميع الحالات</option>
+                            <option value="pending">معلق</option>
+                            <option value="approved">موافق عليه</option>
+                            <option value="rejected">مرفوض</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="transactionTypeFilter">نوع المعاملة:</label>
+                        <select id="transactionTypeFilter" onchange="filterRequests()">
+                            <option value="">جميع الأنواع</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="requestSearchInput">البحث:</label>
+                        <div class="search-container">
+                            <input type="text" id="requestSearchInput" class="search-input" placeholder="البحث بالاسم أو رقم الطلب..." onkeyup="filterRequests()">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button class="btn btn-outline" onclick="clearRequestFilters()">
+                            <i class="fas fa-times"></i> مسح الفلاتر
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- جدول الطلبات -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>رقم التتبع</th>
+                            <th>رقم الطلب</th>
+                            <th>اسم الطالب</th>
+                            <th>القسم</th>
+                            <th>نوع المعاملة</th>
+                            <th>اسم الخطوة</th>
+                            <th>تاريخ الطلب</th>
+                            <th>المبلغ (ريال)</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                جاري تحميل البيانات...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- الشريط السفلي -->
+        <footer class="footer">
+            <p>نظام شؤون الطلاب - جامعة إقليم سبأ</p>
+            <p style="font-size: 12px; opacity: 0.8;">جميع الحقوق محفوظة © 2024</p>
+        </footer>
+    </div>
+
+    <!-- نافذة معاينة الطلب -->
+    <div id="viewRequestModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('viewRequestModal')">&times;</span>
+            <h3>تفاصيل الطلب</h3>
+            <div id="requestDetailsContent">
+                <!-- سيتم ملء التفاصيل هنا -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الدفع -->
+    <div id="markAsPaidModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> تأكيد الدفع</h3>
+                <span class="close" onclick="closeModal('markAsPaidModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="paymentRequestInfo"></div>
+
+
+                <div class="form-group">
+                    <label for="paymentNotes">ملاحظات (اختياري):</label>
+                    <textarea id="paymentNotes" class="form-control" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="confirmPayment()">
+                    <i class="fas fa-check"></i> تأكيد الدفع
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('markAsPaidModal')">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="../js/page_guard.js"></script>
+    <script src="../js/finance.js"></script>
+</body>
+</html>

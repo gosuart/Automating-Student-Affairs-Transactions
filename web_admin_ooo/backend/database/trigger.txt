@@ -1,0 +1,275 @@
+DELIMITER $$
+
+CREATE TRIGGER `after_request_insert` 
+AFTER INSERT ON `requests` 
+FOR EACH ROW 
+BEGIN
+    -- متغيرات للتحكم في الحلقة
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE step_id INT;
+    DECLARE step_order_val INT;
+    DECLARE step_name_val VARCHAR(100);
+    DECLARE step_description_val TEXT;
+    DECLARE responsible_role_val VARCHAR(50);
+    DECLARE is_required_val TINYINT(1);
+    DECLARE estimated_duration_val INT;
+    DECLARE conditions_val TEXT;
+    DECLARE step_status VARCHAR(20);
+    
+    -- مؤشر للتنقل عبر خطوات المعاملة
+    DECLARE step_cursor CURSOR FOR
+        SELECT 
+            id,
+            step_order,
+            step_name,
+            step_description,
+            responsible_role,
+            is_required,
+            estimated_duration_days,
+            conditions
+        FROM transaction_steps 
+        WHERE transaction_type_id = NEW.transaction_type_id 
+          AND status = 'active'
+        ORDER BY step_order ASC;
+    
+    -- معالج نهاية البيانات
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    -- فتح المؤشر
+    OPEN step_cursor;
+    
+    -- حلقة لإدراج كل خطوة
+    step_loop: LOOP
+        -- جلب الخطوة التالية
+        FETCH step_cursor INTO 
+            step_id, 
+            step_order_val, 
+            step_name_val, 
+            step_description_val, 
+            responsible_role_val, 
+            is_required_val, 
+            estimated_duration_val, 
+            conditions_val;
+        
+        -- الخروج من الحلقة إذا انتهت البيانات
+        IF done THEN
+            LEAVE step_loop;
+        END IF;
+        
+        -- تحديد حالة الخطوة: الخطوة الأولى "in_progress"، والباقي "pending"
+        IF step_order_val = 1 THEN
+            SET step_status = 'in_progress';
+        ELSE
+            SET step_status = 'pending';
+        END IF;
+        
+        -- إدراج سجل التتبع للخطوة
+        INSERT INTO request_tracking (
+            request_id,
+            step_name,
+            step_order,
+            status,
+            assigned_to,
+            processed_by,
+            comments,
+            created_at,
+            updated_at
+        ) VALUES (
+            NEW.id,
+            step_name_val,
+            step_order_val,
+            step_status,
+            NULL,
+            NULL,
+            CASE 
+                WHEN step_order_val = 1 THEN 'في انتظار المراجعة'
+                ELSE CONCAT('خطوة ', step_order_val, ': ', COALESCE(step_description_val, step_name_val))
+            END,
+            NOW(),
+            NOW()
+        );
+        
+    END LOOP;
+    
+    -- إغلاق المؤشر
+    CLOSE step_cursor;
+
+END
+$$
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DELIMITER $$
+
+CREATE TRIGGER after_step_status_update
+AFTER UPDATE ON request_tracking
+FOR EACH ROW
+BEGIN
+    -- 1. حالة "مرفوض"
+    IF NEW.status = 'rejected' AND OLD.status != 'rejected' THEN
+        UPDATE requests
+        SET status = 'rejected',
+            updated_at = NOW()
+        WHERE id = NEW.request_id;
+
+    -- 2. حالة "مكتمل"
+    ELSEIF NEW.status = 'completed' AND OLD.status != 'completed' THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM request_tracking
+            WHERE request_id = NEW.request_id
+              AND status != 'completed'
+        ) THEN
+            UPDATE requests
+            SET status = 'completed',
+                updated_at = NOW()
+            WHERE id = NEW.request_id;
+        END IF;
+
+    -- 3. حالة "قيد المعالجة" إذا كانت فقط الخطوة الأولى قيد التقدم
+    ELSEIF NEW.status = 'in_progress' AND OLD.status != 'in_progress' THEN
+        IF (
+            SELECT COUNT(*) 
+            FROM request_tracking 
+            WHERE request_id = NEW.request_id
+              AND status = 'in_progress'
+        ) = 1
+        AND (
+            SELECT step_order 
+            FROM request_tracking 
+            WHERE request_id = NEW.request_id 
+              AND status = 'in_progress'
+            LIMIT 1
+        ) = 1
+        THEN
+            UPDATE requests
+            SET status = 'in_progress',
+                updated_at = NOW()
+            WHERE id = NEW.request_id;
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+استعلام لجميع الموظفين عدا رئيس القسم و الماليه
+
+
+SELECT 
+    rt.id AS tracking_id,
+    r.request_number,
+    s.name AS student_name,
+    c.name AS college_name,
+    d.name AS department_name,
+    tt.name AS transaction_type_name,
+    ts.step_name,
+    p.name AS position_name,
+    e.name AS employee_name,
+    r.title,
+    r.description,
+    r.status AS request_status,
+    r.amount,
+    r.academic_year,
+    r.semester,
+    r.created_at AS request_created_at
+FROM 
+    request_tracking rt
+JOIN requests r ON rt.request_id = r.id
+JOIN students s ON r.student_id = s.id
+JOIN colleges c ON s.college_id = c.id
+JOIN departments d ON s.department_id = d.id
+JOIN transaction_types tt ON r.transaction_type_id = tt.id
+JOIN transaction_steps ts ON tt.id = ts.transaction_type_id AND rt.step_name = ts.step_name
+JOIN positions p ON ts.responsible_role = p.code
+JOIN employees e ON p.id = e.position_id
+WHERE 
+    s.college_id = @collegeId
+    AND e.id = @userId;
+
+
+
+
+
+
+استعلام خاص يرئيس القسم
+
+SELECT 
+    rt.id AS tracking_id,
+    r.request_number,
+    s.name AS student_name,
+    c.name AS college_name,
+    d.name AS department_name,
+    tt.name AS transaction_type_name,
+    ts.step_name,
+    p.name AS position_name,
+    e.name AS employee_name,
+    r.title,
+    r.description,
+    r.status AS request_status,
+    r.amount,
+    r.academic_year,
+    r.semester,
+    r.created_at AS request_created_at
+FROM 
+    request_tracking rt
+JOIN requests r ON rt.request_id = r.id
+JOIN students s ON r.student_id = s.id
+JOIN colleges c ON s.college_id = c.id
+JOIN departments d ON s.department_id = d.id
+JOIN transaction_types tt ON r.transaction_type_id = tt.id
+JOIN transaction_steps ts ON tt.id = ts.transaction_type_id AND rt.step_name = ts.step_name
+JOIN positions p ON ts.responsible_role = p.code
+JOIN employees e ON p.id = e.position_id
+WHERE 
+    s.college_id = @collegeId
+    AND s.department_id = @departmentId
+    AND e.id = @userId;

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شؤون الطلاب - الكنترول</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- الشريط العلوي -->
+        <header class="header">
+            <div id="userInfo" class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div>
+                    <div id="userName">موظف الكنترول</div>
+                    <div id="userId" style="font-size: 14px; opacity: 0.8;">رقم الموظف</div>
+                </div>
+            </div>
+            
+            <div class="page-title">
+                قسم الكنترول
+            </div>
+            
+            <div class="header-actions">
+                <button onclick="goToProfile()" class="btn btn-secondary">
+                    <i class="fas fa-user"></i> الحساب الشخصي
+                </button>
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </header>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <!-- الإحصائيات -->
+            <section class="statistics-section">
+                <h2><i class="fas fa-chart-bar"></i> إحصائيات الكنترول</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="pendingConfirmation">0</h3>
+                            <p>معاملات تحتاج تأكيد</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="confirmedToday">0</h3>
+                            <p>تم تأكيدها اليوم</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="confirmedWeek">0</h3>
+                            <p>تم تأكيدها هذا الأسبوع</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="confirmationRate">0%</h3>
+                            <p>معدل التأكيد</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- الفلترة والبحث -->
+            <section class="filters-section">
+                <h2><i class="fas fa-filter"></i> فلترة المعاملات</h2>
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="searchInput">البحث:</label>
+                        <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الرقم الجامعي" onkeyup="filterRequests()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="typeFilter">نوع الطلب:</label>
+                        <select id="typeFilter" onchange="filterRequests()">
+                            <option value="">جميع الأنواع</option>
+                            <option value="absence_excuse">غياب بعذر</option>
+                            <option value="suspension">إيقاف قيد</option>
+                            <option value="transcript">كشف درجات</option>
+                            <option value="certificate">شهادة تخرج</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">الحالة:</label>
+                        <select id="statusFilter" onchange="filterRequests()">
+                            <option value="">جميع الحالات</option>
+                            <option value="pending_confirmation">تحتاج تأكيد</option>
+                            <option value="confirmed">تم التأكيد</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="priorityFilter">الأولوية:</label>
+                        <select id="priorityFilter" onchange="filterRequests()">
+                            <option value="">جميع الأولويات</option>
+                            <option value="urgent">عاجل</option>
+                            <option value="normal">عادي</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" onclick="filterRequests()">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> مسح الفلاتر
+                    </button>
+                    <button class="btn btn-success" onclick="confirmAllSelected()">
+                        <i class="fas fa-check-double"></i> تأكيد المحدد
+                    </button>
+                </div>
+            </section>
+
+            <!-- تبويبات المعاملات -->
+            <section class="requests-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clipboard-list"></i> المعاملات</h2>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="showTab('pending')">
+                            <i class="fas fa-clock"></i> تحتاج تأكيد
+                        </button>
+                        <button class="tab-btn" onclick="showTab('confirmed')">
+                            <i class="fas fa-check-circle"></i> تم التأكيد
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تبويب المعاملات المعلقة -->
+                <div id="pendingTab" class="tab-content active">
+                    <div class="requests-header">
+                        <div class="bulk-actions">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            <label for="selectAll">تحديد الكل</label>
+                        </div>
+                        <div class="requests-count">
+                            <span id="pendingCount">0 معاملة تحتاج تأكيد</span>
+                        </div>
+                    </div>
+                    <div id="pendingRequestsList" class="requests-list">
+                        <!-- المعاملات المعلقة ستظهر هنا -->
+                    </div>
+                </div>
+
+                <!-- تبويب المعاملات المؤكدة -->
+                <div id="confirmedTab" class="tab-content">
+                    <div class="requests-header">
+                        <div class="requests-count">
+                            <span id="confirmedCount">0 معاملة مؤكدة</span>
+                        </div>
+                    </div>
+                    <div id="confirmedRequestsList" class="requests-list">
+                        <!-- المعاملات المؤكدة ستظهر هنا -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- نافذة تفاصيل المعاملة -->
+    <div id="requestDetailsModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> تفاصيل المعاملة</h3>
+                <span class="close" onclick="closeModal('requestDetailsModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="requestDetailsContent">
+                    <!-- تفاصيل المعاملة ستظهر هنا -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="confirmFromDetails()">
+                    <i class="fas fa-check"></i> تأكيد المعاملة
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('requestDetailsModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد المعاملة -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> تأكيد المعاملة</h3>
+                <span class="close" onclick="closeModal('confirmModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="confirmRequestInfo">
+                    <!-- معلومات المعاملة للتأكيد -->
+                </div>
+                <div class="form-group">
+                    <label for="confirmNotes">ملاحظات التأكيد:</label>
+                    <textarea id="confirmNotes" rows="3" placeholder="أضف أي ملاحظات إضافية (اختياري)"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="confirmRequest()">
+                    <i class="fas fa-check"></i> تأكيد
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('confirmModal')">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة التقرير -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-line"></i> تقرير الكنترول</h3>
+                <span class="close" onclick="closeModal('reportModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="reportContent">
+                    <!-- محتوى التقرير سيظهر هنا -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="exportReport()">
+                    <i class="fas fa-file-excel"></i> تصدير Excel
+                </button>
+                <button class="btn btn-primary" onclick="printReport()">
+                    <i class="fas fa-print"></i> طباعة
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('reportModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- تحميل ملفات JavaScript -->
+    <script src="../js/page_guard.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/control.js"></script>
+</body>
+</html>

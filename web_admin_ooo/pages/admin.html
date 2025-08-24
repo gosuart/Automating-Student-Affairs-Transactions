@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شؤون الطلاب - لوحة الأدمن</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <!-- الشريط العلوي -->
+        <header class="header">
+            <div id="userInfo">
+                <button onclick="goToProfile()" class="btn btn-secondary">               
+                    <i class="fas fa-user-shield"></i>
+                <div>
+                    <div id="userName">مدير النظام</div>
+                </div>
+                </button>
+            </div>
+            
+            <div class="page-title">
+                لوحة تحكم الأدمن
+            </div>
+            
+            <div class="header-actions">
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </header>
+        
+
+        <!-- قسم الإدارة -->
+        <section class="management-section">
+            <h3>إدارة النظام</h3>
+            <div class="management-tabs">
+                <button class="tab-btn active" onclick="showTab('employees')">
+                    <i class="fas fa-users"></i> إدارة الموظفين
+                </button>
+                <button class="tab-btn" onclick="showTab('students')">
+                    <i class="fas fa-user-graduate"></i> إدارة الطلاب
+                </button>
+                <button class="tab-btn" onclick="showTab('colleges')">
+                    <i class="fas fa-university"></i> إدارة الكليات
+                </button>
+                <button class="tab-btn" onclick="showTab('departments')">
+                    <i class="fas fa-building"></i> إدارة الأقسام
+                </button>
+                <button class="tab-btn" onclick="showTab('subjects')">
+                    <i class="fas fa-book"></i> إدارة المواد
+                </button>
+                <button class="tab-btn" onclick="showTab('years')">
+                    <i class="fas fa-calendar"></i> السنوات الدراسية
+                </button>
+                <button class="tab-btn" onclick="showTab('courses')">
+                    <i class="fas fa-graduation-cap"></i> إدارة المقررات
+                </button>
+                <button class="tab-btn" onclick="showTab('workflows')">
+                    <i class="fas fa-project-diagram"></i> إدارة المعاملات
+                </button>
+                <button class="tab-btn" onclick="showTab('steps')">
+                    <i class="fas fa-list-ol"></i> إدارة الخطوات
+                </button>
+                <button class="tab-btn" onclick="showTab('constraints')">
+                    <i class="fas fa-lock"></i> إدارة القيود
+                </button>
+            </div>
+
+            <!-- تبويب إدارة الموظفين -->
+            <div id="employees-tab" class="tab-content active">
+                <div class="tab-header">
+                    <h4>إدارة الموظفين</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddEmployeeModal()">
+                            <i class="fas fa-plus"></i> إضافة موظف
+                        </button>
+                        <button class="btn btn-success" onclick="importEmployeesFromExcel()">
+                            <i class="fas fa-file-excel"></i> استيراد من Excel
+                        </button>
+                        <button class="btn btn-info" onclick="exportEmployeesToExcel()">
+                            <i class="fas fa-download"></i> تصدير إلى Excel
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-section">
+                    <div class="search-container">
+                        <input type="text" id="employeeSearch" placeholder="البحث عن موظف..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>رقم الموظف</th>
+                                <th>الاسم</th>
+                                <th>الوظيفة</th>
+                                <th>الكلية</th>
+                                <th>القسم</th>
+                                <th>الحالة</th>
+                                <th>آخر تسجيل دخول</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeesTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة الطلاب -->
+            <div id="students-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة الطلاب</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddStudentModal()">
+                            <i class="fas fa-plus"></i> إضافة طالب
+                        </button>
+                        <button class="btn btn-success" onclick="importStudentsFromExcel()">
+                            <i class="fas fa-file-excel"></i> استيراد من Excel
+                        </button>
+                        <button class="btn btn-info" onclick="exportStudentsToExcel()">
+                            <i class="fas fa-download"></i> تصدير إلى Excel
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-section">
+                    <div class="search-container">
+                        <input type="text" id="studentSearch" placeholder="البحث عن طالب..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>رقم الطالب</th>
+                                <th>الاسم</th>
+                                <th>الكلية</th>
+                                <th>القسم</th>
+                                <th>المستوى الدراسي</th>
+                                <th>نظام الدراسة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة الكليات -->
+            <div id="colleges-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة الكليات</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddCollegeModal()">
+                            <i class="fas fa-plus"></i> إضافة كلية
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>معرف الكلية</th>
+                                <th>اسم الكلية</th>
+                                <th>كود الكلية</th>
+                                <th>تاريخ الافتتاح</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="collegesTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة الأقسام -->
+            <div id="departments-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة الأقسام</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddDepartmentModal()">
+                            <i class="fas fa-plus"></i> إضافة قسم
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>رمز القسم</th>
+                                <th>اسم القسم</th>
+                                <th>الكلية</th>
+                                <th>عدد الطلاب</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="departmentsTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة المواد -->
+            <div id="subjects-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة المواد الدراسية</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddSubjectModal()">
+                            <i class="fas fa-plus"></i> إضافة مادة
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>كود المادة</th>
+                                <th>اسم المادة</th>
+                                <th>عدد الساعات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectsTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب السنوات الدراسية -->
+            <div id="years-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة السنوات الدراسية</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddYearModal()">
+                            <i class="fas fa-plus"></i> إضافة سنة دراسية
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>السنة الدراسية</th>
+                                <th>الحالة</th>
+                                <th>تاريخ البداية</th>
+                                <th>تاريخ النهاية</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="yearsTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة المقررات -->
+            <div id="courses-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة المقررات</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-success" onclick="refreshCourses()" title="تحديث البيانات">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddCourseModal()">
+                            <i class="fas fa-plus"></i> إضافة مقرر
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportCoursesData()">
+                            <i class="fas fa-download"></i> تصدير البيانات
+                        </button>
+                    </div>
+                </div>
+
+                <!-- قسم البحث والفلترة -->
+                <div class="search-section">
+                    <div class="search-filters">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="courseYearFilter">السنة الدراسية:</label>
+                                <select id="courseYearFilter" onchange="filterCourses()">
+                                    <option value="">جميع السنوات</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="courseCollegeFilter">الكلية:</label>
+                                <select id="courseCollegeFilter" onchange="filterCourses()">
+                                    <option value="">جميع الكليات</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="courseDepartmentFilter">القسم:</label>
+                                <select id="courseDepartmentFilter" onchange="filterCourses()">
+                                    <option value="">جميع الأقسام</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="courseSemesterFilter">الترم:</label>
+                                <select id="courseSemesterFilter" onchange="filterCourses()">
+                                    <option value="">جميع الترمين</option>
+                                    <option value="first">الترم الأول</option>
+                                    <option value="second">الترم الثاني</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="courseLevelFilter">المستوى:</label>
+                                <select id="courseLevelFilter" onchange="filterCourses()">
+                                    <option value="">جميع المستويات</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-row">
+                            <div class="search-group">
+                                <input type="text" id="courseSearchInput" placeholder="بحث في المقررات..." onkeyup="searchCourses()">
+                                <button class="btn btn-outline" onclick="clearCourseFilters()">
+                                    <i class="fas fa-times"></i> مسح الفلاتر
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- جدول المقررات -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>معرف المقرر</th>
+                                <th>كود المادة</th>
+                                <th>اسم المادة</th>
+                                <th>السنة الدراسية</th>
+                                <th>الترم</th>
+                                <th>المستوى</th>
+                                <th>الكلية</th>
+                                <th>القسم</th>
+                                <th>عدد الساعات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة المعاملات -->
+            <div id="workflows-tab" class="tab-content">
+                <!-- تبويب إدارة أنواع المعاملات -->
+            
+                    <div class="tab-header">
+                        <h4>إدارة أنواع المعاملات</h4>
+                        <div class="tab-actions">
+                            <button class="btn btn-primary" onclick="showAddTransactionModal()">
+                                <i class="fas fa-plus"></i> إضافة معاملة جديدة
+                            </button>
+                        </div>
+                    </div>                    
+                    <div class="search-section">
+                        <div class="filter-section">
+                            <div class="filter-group">
+                                <label for="transactionStatusFilter">فلترة حسب الحالة:</label>
+                                <select id="transactionStatusFilter" class="filter-select" onchange="filterTransactions()">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="active">نشطة</option>
+                                    <option value="inactive">معطلة</option>
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>معرف المعاملة</th>
+                                    <th>اسم المعاملة</th>
+                                    <th>كود المعاملة</th>
+                                    <th>مبلغ النظام العام</th>
+                                    <th>مبلغ النفقة الخاصة</th>
+                                    <th>نوع الواجهة</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <!-- سيتم ملء البيانات هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة الخطوات -->
+            <div id="steps-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة خطوات المعاملات</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddStepModal()">
+                            <i class="fas fa-plus"></i> إضافة خطوة جديدة
+                        </button>
+                        <button class="btn btn-success" onclick="refreshSteps()">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearStepFilters()">
+                            <i class="fas fa-eraser"></i> مسح الفلاتر
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-section">
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="stepTransactionFilter">فلترة حسب نوع المعاملة:</label>
+                            <select id="stepTransactionFilter" class="filter-select" onchange="filterSteps()">
+                                <option value="">جميع المعاملات</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="stepRoleFilter">فلترة حسب الدور:</label>
+                            <select id="stepRoleFilter" class="filter-select" onchange="filterSteps()">
+                                <option value="">جميع الأدوار</option>
+                                <option value="student">طالب</option>
+                                <option value="student_affairs">شؤون طلاب</option>
+                                <option value="department_head">رئيس قسم</option>
+                                <option value="dean">عميد</option>
+                                <option value="finance">مالية</option>
+                                <option value="control">مراقبة</option>
+                                <option value="archive">أرشيف</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="stepRequiredFilter">فلترة حسب النوع:</label>
+                            <select id="stepRequiredFilter" class="filter-select" onchange="filterSteps()">
+                                <option value="">جميع الأنواع</option>
+                                <option value="1">مطلوبة</option>
+                                <option value="0">اختيارية</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="stepSearchInput">البحث:</label>
+                            <input type="text" id="stepSearchInput" class="search-input" placeholder="البحث في اسم الخطوة أو الوصف..." oninput="searchSteps()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>معرف الخطوة</th>
+                                <th>نوع المعاملة</th>
+                                <th>ترتيب الخطوة</th>
+                                <th>اسم الخطوة</th>
+                                <th>الدور المسؤول</th>
+                                <th>المدة المتوقعة</th>
+                                <th>نوع الخطوة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stepsTableBody">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تبويب إدارة القيود -->
+            <div id="constraints-tab" class="tab-content">
+                <div class="tab-header">
+                    <h4>إدارة القيود</h4>
+                    <div class="tab-actions">
+                        <button class="btn btn-primary" onclick="showAddConstraintModal()">
+                            <i class="fas fa-plus"></i> إضافة قيد جديد
+                        </button>
+
+                        <button class="btn btn-info" onclick="showConstraintMappingModal()">
+                            <i class="fas fa-link"></i> ربط القيود بالمعاملات
+                        </button>
+                        <button class="btn btn-warning" onclick="testConstraints()">
+                            <i class="fas fa-vial"></i> اختبار القيود
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-section">
+                    <div class="search-container">
+                        <input type="text" id="constraintSearch" placeholder="البحث في القيود..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div class="filter-section">
+                        <select id="constraintStatusFilter" class="filter-select">
+                            <option value="">جميع الحالات</option>
+                            <option value="1">مفعل</option>
+                            <option value="0">معطل</option>
+                        </select>
+                        <select id="constraintSourceFilter" class="filter-select">
+                            <option value="">جميع المصادر</option>
+                            <option value="students">جدول الطلاب</option>
+                            <option value="view">عرض</option>
+                            <option value="custom">استعلام مخصص</option>
+                            <option value="procedure">إجراء مخزن</option>
+                        </select>
+                        <button class="btn btn-outline" onclick="clearConstraintFilters()">
+                            <i class="fas fa-times"></i> مسح الفلاتر
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>اسم القيد</th>
+                                <th>المتغير</th>
+                                <th>نوع المقارنة</th>
+                                <th>القيمة</th>
+                                <th>مصدر البيانات</th>
+                                <th>المجموعة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="constraintsTableBody">
+                            <!-- سيتم ملء البيانات ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- الشريط السفلي -->
+        <footer class="footer">
+            <p>نظام شؤون الطلاب - جامعة إقليم سبأ</p>
+            <p style="font-size: 12px; opacity: 0.8;">جميع الحقوق محفوظة &copy; 2024</p>
+        </footer>
+    </div>
+
+    <!-- نوافذ منبثقة للإضافة والتعديل -->
+    <!-- نافذة إضافة موظف -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة موظف جديد</h3>
+                <button type="button" class="close" onclick="closeAddEmployeeModal()">&times;</button>
+            </div>
+            
+            <form id="addEmployeeForm" onsubmit="addEmployeeData(event)">
+                <!-- البيانات الأساسية -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addEmployeeId">رقم الموظف (تلقائي) *</label>
+                        <input type="text" id="addEmployeeId" name="employee_id" required readonly placeholder="جاري التحميل..." style="background-color: #f8f9fa; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmployeeName">الاسم الكامل *</label>
+                        <input type="text" id="addEmployeeName" name="name" required placeholder="ادخل الاسم الكامل">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addEmployeePosition">الوظيفة *</label>
+                        <select id="addEmployeePosition" name="position_id" required>
+                            <option value="">جاري تحميل الوظائف...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- بيانات الاتصال -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addEmployeeEmail">البريد الإلكتروني</label>
+                        <input type="email" id="addEmployeeEmail" name="email" placeholder="example@university.edu">
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmployeePhone">رقم الهاتف</label>
+                        <input type="tel" id="addEmployeePhone" name="phone" placeholder="+966 50 123 4567">
+                    </div>
+                </div>
+                
+                <!-- معلومات إضافية -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addEmployeeCollege">الكلية</label>
+                        <select id="addEmployeeCollege" name="college_id" onchange="loadDepartmentsForEmployee('add')">
+                            <option value="">اختر الكلية</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmployeeDepartment">القسم (اختياري)</label>
+                        <select id="addEmployeeDepartment" name="department_id">
+                            <option value="">اختر الكلية أولاً</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- إعداد كلمة المرور -->
+                <div class="form-section">
+                    <h4><i class="fas fa-lock"></i> إعداد كلمة المرور</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addEmployeePassword">كلمة المرور *</label>
+                            <input type="password" id="addEmployeePassword" name="password" required placeholder="ادخل كلمة مرور آمنة">
+                        </div>
+                        <div class="form-group">
+                            <label for="addEmployeePasswordConfirm">تأكيد كلمة المرور *</label>
+                            <input type="password" id="addEmployeePasswordConfirm" name="password_confirm" required placeholder="أعد إدخال كلمة المرور">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> إضافة الموظف
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddEmployeeModal()">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- نموذج تعديل الموظف -->
+    <div id="editEmployeeModal" class="modal">
+        
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-user-edit"></i> تعديل بيانات الموظف</h3>
+                    <button type="button" class="close" onclick="closeEditEmployeeModal()">&times;</button>
+                </div>
+                
+                <form id="editEmployeeForm" onsubmit="updateEmployeeData(event)">
+                    <input type="hidden" id="editEmployeeId" name="employee_id">
+                    
+                    <!-- البيانات الأساسية -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEmployeeName">الاسم الكامل *</label>
+                            <input type="text" id="editEmployeeName" name="name" required placeholder="ادخل الاسم الكامل">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmployeeRole">الوظيفة *</label>
+                            <select id="editEmployeeRole" name="position_id" required>
+                                <option value="">جاري تحميل الوظائف...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- بيانات الاتصال -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEmployeeEmail">البريد الإلكتروني</label>
+                            <input type="email" id="editEmployeeEmail" name="email" placeholder="example@university.edu">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmployeePhone">رقم الهاتف</label>
+                            <input type="tel" id="editEmployeePhone" name="phone" placeholder="+966 50 123 4567">
+                        </div>
+                    </div>
+                    
+                    <!-- معلومات إضافية -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEmployeeCollege">الكلية</label>
+                            <select id="editEmployeeCollege" name="college_id" onchange="loadDepartmentsForEmployee('edit')">
+                                <option value="">اختر الكلية</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmployeeDepartment">القسم (اختياري)</label>
+                            <select id="editEmployeeDepartment" name="department_id">
+                                <option value="">اختر الكلية أولاً</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- تغيير كلمة المرور -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-lock"></i> تغيير كلمة المرور (اختياري)</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editEmployeePassword">كلمة المرور الجديدة</label>
+                                <input type="password" id="editEmployeePassword" name="password" placeholder="اتركه فارغاً إذا لم ترد تغيير كلمة المرور">
+                            </div>
+                            <div class="form-group">
+                                <label for="editEmployeePasswordConfirm">تأكيد كلمة المرور</label>
+                                <input type="password" id="editEmployeePasswordConfirm" name="password_confirm" placeholder="أعد إدخال كلمة المرور الجديدة">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditEmployeeModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+       
+    </div>
+
+    <!-- نافذة عرض تفاصيل الموظف -->
+    <div id="viewEmployeeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> تفاصيل الموظف</h3>
+                <span class="close" onclick="closeViewEmployeeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="details-container">
+                    <div class="detail-row">
+                        <label>رقم الموظف:</label>
+                        <span id="viewEmployeeId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>الاسم الكامل:</label>
+                        <span id="viewEmployeeName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>البريد الإلكتروني:</label>
+                        <span id="viewEmployeeEmail"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>رقم الهاتف:</label>
+                        <span id="viewEmployeePhone"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>الوظيفة:</label>
+                        <span id="viewEmployeePosition"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>الكلية:</label>
+                        <span id="viewEmployeeCollege"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>القسم:</label>
+                        <span id="viewEmployeeDepartment"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>الحالة:</label>
+                        <span id="viewEmployeeStatus"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>آخر تسجيل دخول:</label>
+                        <span id="viewEmployeeLastLogin"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewEmployeeCreatedAt"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>تاريخ آخر تحديث:</label>
+                        <span id="viewEmployeeUpdatedAt"></span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewEmployeeModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة طالب جديد -->
+    <div id="addStudentModal" class="modal">
+        
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-user-plus"></i> إضافة طالب جديد</h3>
+                    <button type="button" class="close" onclick="closeAddStudentModal()">&times;</button>
+                </div>
+                
+                <form id="addStudentForm" onsubmit="addStudentData(event)">
+                    <!-- البيانات الأساسية -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-user"></i> البيانات الأساسية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentId">رقم الطالب *</label>
+                                <input type="text" id="addStudentId" name="student_id" required placeholder="سيتم توليده تلقائياً" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentName">الاسم الكامل *</label>
+                                <input type="text" id="addStudentName" name="name" required placeholder="ادخل الاسم الكامل">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- البيانات الأكاديمية -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-graduation-cap"></i> البيانات الأكاديمية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentCollege">الكلية *</label>
+                                <select id="addStudentCollege" name="college_id" required onchange="loadDepartmentsForStudent()">
+                                    <option value="">جاري تحميل الكليات...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentDepartment">القسم *</label>
+                                <select id="addStudentDepartment" name="department_id" required>
+                                    <option value="">اختر الكلية أولاً</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentLevel">المستوى الدراسي *</label>
+                                <select id="addStudentLevel" name="level" required>
+                                    <option value="">جاري تحميل المستويات...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentAcademicYear">السنة الدراسية *</label>
+                                <select id="addStudentAcademicYear" name="academic_year" required>
+                                    <option value="">جاري تحميل السنوات...</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentSystem">نظام الدراسة *</label>
+                                <select id="addStudentSystem" name="study_system" required>
+                                    <option value="general">النظام العام</option>
+                                    <option value="parallel">النظام الموازي</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentStatus">حالة الطالب *</label>
+                                <select id="addStudentStatus" name="status" required>
+                                    <option value="new">مستجد</option>
+                                    <option value="continuing">باقي</option>
+                                    <option value="suspended">موقف قيد</option>
+                                    <option value="withdrawn">منسحب</option>
+                                    <option value="dismissed">مفصول</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- بيانات الاتصال -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-phone"></i> بيانات الاتصال</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentEmail">البريد الإلكتروني</label>
+                                <input type="email" id="addStudentEmail" name="email" placeholder="example@student.edu">
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentPhone">رقم الهاتف</label>
+                                <input type="tel" id="addStudentPhone" name="phone" placeholder="+966 50 123 4567">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إعداد كلمة المرور -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-lock"></i> إعداد كلمة المرور</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addStudentPassword">كلمة المرور</label>
+                                <input type="password" id="addStudentPassword" name="password" placeholder="ادخل كلمة مرور آمنة">
+                            </div>
+                            <div class="form-group">
+                                <label for="addStudentPasswordConfirm">تأكيد كلمة المرور</label>
+                                <input type="password" id="addStudentPasswordConfirm" name="password_confirm" placeholder="أعد إدخال كلمة المرور">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة الطالب
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddStudentModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        
+    </div>
+
+    <!-- سكريبتات JavaScript -->
+    <!-- نافذة تعديل الطالب -->
+    <div id="editStudentModal" class="modal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>تعديل بيانات الطالب</h3>
+                <span class="close" onclick="closeEditStudentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm" onsubmit="updateStudentData(event)">
+                    <!-- البيانات الأساسية -->
+                    <div class="form-section">
+                        <h4>البيانات الأساسية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentId">رقم الطالب *</label>
+                                <input type="text" id="editStudentId" name="student_id" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentName">الاسم الكامل *</label>
+                                <input type="text" id="editStudentName" name="name" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- البيانات الأكاديمية -->
+                    <div class="form-section">
+                        <h4>البيانات الأكاديمية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentCollege">الكلية *</label>
+                                <select id="editStudentCollege" name="college_id" required onchange="loadDepartmentsForEditStudent()">
+                                    <option value="">اختر الكلية</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentDepartment">القسم *</label>
+                                <select id="editStudentDepartment" name="department_id" required>
+                                    <option value="">اختر الكلية أولاً</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentLevel">المستوى الدراسي *</label>
+                                <select id="editStudentLevel" name="level_code" required>
+                                    <option value="">اختر المستوى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentAcademicYear">السنة الدراسية *</label>
+                                <select id="editStudentAcademicYear" name="academic_year_code" required>
+                                    <option value="">اختر السنة الدراسية</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentSystem">نظام الدراسة *</label>
+                                <select id="editStudentSystem" name="study_system" required>
+                                    <option value="">اختر نظام الدراسة</option>
+                                    <option value="general">عام</option>
+                                    <option value="parallel">نفقه خاصه</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentStatus">حالة الطالب *</label>
+                                <select id="editStudentStatus" name="status" required>
+                                    <option value="">اختر الحالة</option>
+                                    <option value="new">مستجد</option>
+                                    <option value="continuing">باقي</option>
+                                    <option value="suspended">موقف قيد</option>
+                                    <option value="withdrawn">منسحب</option>
+                                    <option value="dismissed">مفصول</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- بيانات الاتصال -->
+                    <div class="form-section">
+                        <h4>بيانات الاتصال</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentEmail">البريد الإلكتروني</label>
+                                <input type="email" id="editStudentEmail" name="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentPhone">رقم الهاتف</label>
+                                <input type="tel" id="editStudentPhone" name="phone">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- كلمة المرور -->
+                    <div class="form-section">
+                        <h4>كلمة المرور</h4>
+                        <p class="form-note">اتركها فارغة إذا كنت لا تريد تغيير كلمة المرور</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editStudentPassword">كلمة المرور الجديدة</label>
+                                <input type="password" id="editStudentPassword" name="password">
+                            </div>
+                            <div class="form-group">
+                                <label for="editStudentPasswordConfirm">تأكيد كلمة المرور</label>
+                                <input type="password" id="editStudentPasswordConfirm" name="password_confirm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditStudentModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة كلية -->
+    <div id="addCollegeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة كلية جديدة</h3>
+                <span class="close" onclick="closeAddCollegeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCollegeForm" onsubmit="addCollegeData(event)">
+                    <div class="form-group">
+                        <label for="addCollegeName">اسم الكلية *</label>
+                        <input type="text" id="addCollegeName" name="name" required placeholder="أدخل اسم الكلية">
+                        <div class="error-message" id="addCollegeNameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addCollegeCode">كود الكلية *</label>
+                        <input type="text" id="addCollegeCode" name="code" required placeholder="أدخل كود الكلية" maxlength="10">
+                        <div class="error-message" id="addCollegeCodeError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addCollegeEstablishmentDate">تاريخ الافتتاح</label>
+                        <input type="date" id="addCollegeEstablishmentDate" name="establishment_date" placeholder="اختياري">
+                        <div class="error-message" id="addCollegeEstablishmentDateError"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ الكلية
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddCollegeModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل كلية -->
+    <div id="editCollegeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات الكلية</h3>
+                <span class="close" onclick="closeEditCollegeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editCollegeForm" onsubmit="updateCollegeData(event)">
+                    <div class="form-group">
+                        <label for="editCollegeName">اسم الكلية *</label>
+                        <input type="text" id="editCollegeName" name="name" required placeholder="أدخل اسم الكلية">
+                        <div class="error-message" id="editCollegeNameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCollegeCode">كود الكلية *</label>
+                        <input type="text" id="editCollegeCode" name="code" required placeholder="أدخل كود الكلية" maxlength="10">
+                        <div class="error-message" id="editCollegeCodeError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCollegeEstablishmentDate">تاريخ الافتتاح</label>
+                        <input type="date" id="editCollegeEstablishmentDate" name="establishment_date">
+                        <div class="error-message" id="editCollegeEstablishmentDateError"></div>
+                    </div>
+
+
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditCollegeModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل الكلية -->
+    <div id="viewCollegeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل الكلية</h3>
+                <span class="close" onclick="closeViewCollegeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="details-container">
+                    <div class="detail-row">
+                        <label>معرف الكلية:</label>
+                        <span id="viewCollegeId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>اسم الكلية:</label>
+                        <span id="viewCollegeName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>كود الكلية:</label>
+                        <span id="viewCollegeCode"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>تاريخ الافتتاح:</label>
+                        <span id="viewCollegeEstablishmentDate"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewCollegeCreatedAt"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>تاريخ آخر تحديث:</label>
+                        <span id="viewCollegeUpdatedAt"></span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewCollegeModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة قسم -->
+    <div id="addDepartmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة قسم جديد</h3>
+                <span class="close" onclick="closeAddDepartmentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addDepartmentForm" onsubmit="addDepartmentData(event)">
+                    <div class="form-group">
+                        <label for="addDepartmentCode">رمز القسم *</label>
+                        <input type="text" id="addDepartmentCode" name="code" required placeholder="أدخل رمز القسم">
+                        <div class="error-message" id="addDepartmentCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDepartmentName">اسم القسم *</label>
+                        <input type="text" id="addDepartmentName" name="name" required placeholder="أدخل اسم القسم">
+                        <div class="error-message" id="addDepartmentNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDepartmentCollege">الكلية *</label>
+                        <select id="addDepartmentCollege" name="college_id" required>
+                            <option value="">اختر الكلية</option>
+                        </select>
+                        <div class="error-message" id="addDepartmentCollegeError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddDepartmentModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل قسم -->
+    <div id="editDepartmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات القسم</h3>
+                <span class="close" onclick="closeEditDepartmentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editDepartmentForm" onsubmit="updateDepartmentData(event)">
+                    <input type="hidden" id="editDepartmentId" name="id">
+                    <div class="form-group">
+                        <label for="editDepartmentCode">رمز القسم *</label>
+                        <input type="text" id="editDepartmentCode" name="code" required placeholder="أدخل رمز القسم">
+                        <div class="error-message" id="editDepartmentCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartmentName">اسم القسم *</label>
+                        <input type="text" id="editDepartmentName" name="name" required placeholder="أدخل اسم القسم">
+                        <div class="error-message" id="editDepartmentNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartmentCollege">الكلية *</label>
+                        <select id="editDepartmentCollege" name="college_id" required>
+                            <option value="">اختر الكلية</option>
+                        </select>
+                        <div class="error-message" id="editDepartmentCollegeError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditDepartmentModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل القسم -->
+    <div id="viewDepartmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل القسم</h3>
+                <span class="close" onclick="closeViewDepartmentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="department-details">
+                    <div class="detail-group">
+                        <label>رمز القسم:</label>
+                        <span id="viewDepartmentCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>اسم القسم:</label>
+                        <span id="viewDepartmentName"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>الكلية:</label>
+                        <span id="viewDepartmentCollege"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>عدد الطلاب:</label>
+                        <span id="viewDepartmentStudents"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewDepartmentCreated"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewDepartmentModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة مادة دراسية -->
+    <div id="addSubjectModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة مادة دراسية جديدة</h3>
+                <span class="close" onclick="closeAddSubjectModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addSubjectForm" onsubmit="addSubjectData(event)">
+                    <div class="form-group">
+                        <label for="addSubjectCode">كود المادة *</label>
+                        <input type="text" id="addSubjectCode" name="subject_code" required placeholder="أدخل كود المادة">
+                        <div class="error-message" id="addSubjectCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addSubjectName">اسم المادة *</label>
+                        <input type="text" id="addSubjectName" name="subject_name" required placeholder="أدخل اسم المادة">
+                        <div class="error-message" id="addSubjectNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addSubjectHours">عدد الساعات *</label>
+                        <input type="number" id="addSubjectHours" name="credit_hours" required min="1" max="10" placeholder="أدخل عدد الساعات">
+                        <div class="error-message" id="addSubjectHoursError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddSubjectModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل مادة دراسية -->
+    <div id="editSubjectModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات المادة الدراسية</h3>
+                <span class="close" onclick="closeEditSubjectModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editSubjectForm" onsubmit="updateSubjectData(event)">
+                    <input type="hidden" id="editSubjectId" name="id">
+                    <div class="form-group">
+                        <label for="editSubjectCode">كود المادة *</label>
+                        <input type="text" id="editSubjectCode" name="subject_code" required placeholder="أدخل كود المادة">
+                        <div class="error-message" id="editSubjectCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubjectName">اسم المادة *</label>
+                        <input type="text" id="editSubjectName" name="subject_name" required placeholder="أدخل اسم المادة">
+                        <div class="error-message" id="editSubjectNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubjectHours">عدد الساعات *</label>
+                        <input type="number" id="editSubjectHours" name="credit_hours" required min="1" max="10" placeholder="أدخل عدد الساعات">
+                        <div class="error-message" id="editSubjectHoursError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditSubjectModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل المادة الدراسية -->
+    <div id="viewSubjectModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل المادة الدراسية</h3>
+                <span class="close" onclick="closeViewSubjectModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="subject-details">
+                    <div class="detail-group">
+                        <label>كود المادة:</label>
+                        <span id="viewSubjectCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>اسم المادة:</label>
+                        <span id="viewSubjectName"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>عدد الساعات:</label>
+                        <span id="viewSubjectHours"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewSubjectCreated"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewSubjectModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة سنة دراسية جديدة -->
+    <div id="addYearModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة سنة دراسية جديدة</h3>
+                <span class="close" onclick="closeAddYearModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addYearForm" onsubmit="addYearData(event)">
+                    <div class="form-group">
+                        <label for="addYearCode">كود السنة الدراسية *</label>
+                        <input type="text" id="addYearCode" name="year_code" required placeholder="مثال: 2024-2025">
+                        <div class="error-message" id="addYearCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addYearStatus">الحالة *</label>
+                        <select id="addYearStatus" name="status" required>
+                            <option value="active">نشطة</option>
+                            <option value="inactive">غير نشطة</option>
+                        </select>
+                        <div class="error-message" id="addYearStatusError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addYearStartDate">تاريخ البداية *</label>
+                        <input type="date" id="addYearStartDate" name="start_date" required>
+                        <div class="error-message" id="addYearStartDateError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addYearEndDate">تاريخ النهاية *</label>
+                        <input type="date" id="addYearEndDate" name="end_date" required>
+                        <div class="error-message" id="addYearEndDateError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة السنة الدراسية
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddYearModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل السنة الدراسية -->
+    <div id="editYearModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات السنة الدراسية</h3>
+                <span class="close" onclick="closeEditYearModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editYearForm" onsubmit="updateYearData(event)">
+                    <input type="hidden" id="editYearId" name="id">
+                    <div class="form-group">
+                        <label for="editYearCode">كود السنة الدراسية *</label>
+                        <input type="text" id="editYearCode" name="year_code" required placeholder="مثال: 2024-2025">
+                        <div class="error-message" id="editYearCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editYearStatus">الحالة *</label>
+                        <select id="editYearStatus" name="status" required>
+                            <option value="active">نشطة</option>
+                            <option value="inactive">غير نشطة</option>
+                        </select>
+                        <div class="error-message" id="editYearStatusError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editYearStartDate">تاريخ البداية *</label>
+                        <input type="date" id="editYearStartDate" name="start_date" required>
+                        <div class="error-message" id="editYearStartDateError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editYearEndDate">تاريخ النهاية *</label>
+                        <input type="date" id="editYearEndDate" name="end_date" required>
+                        <div class="error-message" id="editYearEndDateError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditYearModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل السنة الدراسية -->
+    <div id="viewYearModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل السنة الدراسية</h3>
+                <span class="close" onclick="closeViewYearModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="year-details">
+                    <div class="detail-group">
+                        <label>كود السنة الدراسية:</label>
+                        <span id="viewYearCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>الحالة:</label>
+                        <span id="viewYearStatus"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ البداية:</label>
+                        <span id="viewYearStartDate"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ النهاية:</label>
+                        <span id="viewYearEndDate"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewYearCreated"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewYearModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة مقرر -->
+    <div id="addCourseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة مقرر جديد</h3>
+                <span class="close" onclick="closeAddCourseModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCourseForm" onsubmit="addCourseData(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addCourseSubjectId">المادة *</label>
+                            <select id="addCourseSubjectId" name="subject_id" required>
+                                <option value="">اختر المادة</option>
+                            </select>
+                            <div class="error-message" id="addCourseSubjectIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCourseYearId">السنة الدراسية *</label>
+                            <select id="addCourseYearId" name="year_id" required onchange="loadCollegesForCourse()">
+                                <option value="">اختر السنة</option>
+                            </select>
+                            <div class="error-message" id="addCourseYearIdError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addCourseCollegeId">الكلية *</label>
+                            <select id="addCourseCollegeId" name="college_id" required onchange="loadDepartmentsForCourse()">
+                                <option value="">اختر الكلية</option>
+                            </select>
+                            <div class="error-message" id="addCourseCollegeIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCourseDepartmentId">القسم *</label>
+                            <select id="addCourseDepartmentId" name="department_id" required>
+                                <option value="">اختر القسم</option>
+                            </select>
+                            <div class="error-message" id="addCourseDepartmentIdError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addCourseLevelId">المستوى *</label>
+                            <select id="addCourseLevelId" name="level_id" required>
+                                <option value="">اختر المستوى</option>
+                            </select>
+                            <div class="error-message" id="addCourseLevelIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCourseSemesterTerm">الترم *</label>
+                            <select id="addCourseSemesterTerm" name="semester_term" required>
+                                <option value="">اختر الترم</option>
+                                <option value="first">الترم الأول</option>
+                                <option value="second">الترم الثاني</option>
+                            </select>
+                            <div class="error-message" id="addCourseSemesterTermError"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ المقرر
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddCourseModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل مقرر -->
+    <div id="editCourseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات المقرر</h3>
+                <span class="close" onclick="closeEditCourseModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editCourseForm" onsubmit="updateCourseData(event)">
+                    <input type="hidden" id="editCourseId" name="id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editCourseSubjectId">المادة *</label>
+                            <select id="editCourseSubjectId" name="subject_id" required>
+                                <option value="">اختر المادة</option>
+                            </select>
+                            <div class="error-message" id="editCourseSubjectIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCourseYearId">السنة الدراسية *</label>
+                            <select id="editCourseYearId" name="year_id" required onchange="loadCollegesForEditCourse()">
+                                <option value="">اختر السنة</option>
+                            </select>
+                            <div class="error-message" id="editCourseYearIdError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editCourseCollegeId">الكلية *</label>
+                            <select id="editCourseCollegeId" name="college_id" required onchange="loadDepartmentsForEditCourse()">
+                                <option value="">اختر الكلية</option>
+                            </select>
+                            <div class="error-message" id="editCourseCollegeIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCourseDepartmentId">القسم *</label>
+                            <select id="editCourseDepartmentId" name="department_id" required>
+                                <option value="">اختر القسم</option>
+                            </select>
+                            <div class="error-message" id="editCourseDepartmentIdError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editCourseLevelId">المستوى *</label>
+                            <select id="editCourseLevelId" name="level_id" required>
+                                <option value="">اختر المستوى</option>
+                            </select>
+                            <div class="error-message" id="editCourseLevelIdError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCourseSemesterTerm">الترم *</label>
+                            <select id="editCourseSemesterTerm" name="semester_term" required>
+                                <option value="">اختر الترم</option>
+                                <option value="first">الترم الأول</option>
+                                <option value="second">الترم الثاني</option>
+                            </select>
+                            <div class="error-message" id="editCourseSemesterTermError"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditCourseModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل المقرر -->
+    <div id="viewCourseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل المقرر</h3>
+                <span class="close" onclick="closeViewCourseModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="course-details">
+                    <div class="detail-group">
+                        <label>معرف المقرر:</label>
+                        <span id="viewCourseId"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>كود المادة:</label>
+                        <span id="viewCourseSubjectCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>اسم المادة:</label>
+                        <span id="viewCourseSubjectName"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>عدد الساعات المعتمدة:</label>
+                        <span id="viewCourseCreditHours"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>السنة الدراسية:</label>
+                        <span id="viewCourseYearCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>الترم:</label>
+                        <span id="viewCourseSemesterTerm"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>المستوى:</label>
+                        <span id="viewCourseLevelCode"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>الكلية:</label>
+                        <span id="viewCourseCollegeName"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>القسم:</label>
+                        <span id="viewCourseDepartmentName"></span>
+                    </div>
+                    <div class="detail-group">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewCourseCreatedAt"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewCourseModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+
+
+    <!-- نوافذ إدارة المعاملات -->
+    <!-- نافذة إضافة معاملة جديدة -->
+    <div id="addTransactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة معاملة جديدة</h3>
+                <span class="close" onclick="closeAddTransactionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addTransactionForm" onsubmit="addTransactionData(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addTransactionName">اسم المعاملة *</label>
+                            <input type="text" id="addTransactionName" name="name" required placeholder="مثل: إيقاف قيد">
+                            <div class="error-message" id="addTransactionNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addTransactionCode">كود المعاملة *</label>
+                            <input type="text" id="addTransactionCode" name="code" required placeholder="مثل: SUSP_001">
+                            <div class="error-message" id="addTransactionCodeError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>المبالغ المالية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="addTransactionGeneralAmount">مبلغ النظام العام </label>
+                                <input type="number" id="addTransactionGeneralAmount" name="general_amount" step="0.01" min="0" placeholder="0.00">
+                                <div class="error-message" id="addTransactionGeneralAmountError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="addTransactionParallelAmount">مبلغ النظام الموازي </label>
+                                <input type="number" id="addTransactionParallelAmount" name="parallel_amount" step="0.01" min="0" placeholder="0.00">
+                                <div class="error-message" id="addTransactionParallelAmountError"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addTransactionStatus">حالة المعاملة *</label>
+                        <select id="addTransactionStatus" name="status" required>
+                            <option value="active">نشطة</option>
+                            <option value="inactive">معطلة</option>
+                        </select>
+                        <div class="error-message" id="addTransactionStatusError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addTransactionTypes">نوع الواجهه للتطبيق *</label>
+                        <select id="addTransactionTypes" name="request_type" required>
+                                    <option value="normal_request">ادخالات تلقائية</option>
+                                    <option value="subject_request">ادخالات المواد</option>
+                                    <option value="collages_request">ادخالات الكليات</option>
+                        </select>
+                        <div class="error-message" id="editTransactionStatusError"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ المعاملة
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddTransactionModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل معاملة -->
+    <div id="editTransactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل بيانات المعاملة</h3>
+                <span class="close" onclick="closeEditTransactionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editTransactionForm" onsubmit="updateTransactionData(event)">
+                    <input type="hidden" id="editTransactionId" name="id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editTransactionName">اسم المعاملة *</label>
+                            <input type="text" id="editTransactionName" name="name" required placeholder="مثل: إيقاف قيد">
+                            <div class="error-message" id="editTransactionNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTransactionCode">كود المعاملة *</label>
+                            <input type="text" id="editTransactionCode" name="code" required placeholder="مثل: SUSP_001">
+                            <div class="error-message" id="editTransactionCodeError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>المبالغ المالية</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editTransactionGeneralAmount">مبلغ النظام العام </label>
+                                <input type="number" id="editTransactionGeneralAmount" name="general_amount" step="0.01" min="0" placeholder="0.00">
+                                <div class="error-message" id="editTransactionGeneralAmountError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTransactionParallelAmount">مبلغ النظام الموازي </label>
+                                <input type="number" id="editTransactionParallelAmount" name="parallel_amount" step="0.01" min="0" placeholder="0.00">
+                                <div class="error-message" id="editTransactionParallelAmountError"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTransactionStatus">حالة المعاملة *</label>
+                        <select id="editTransactionStatus" name="status" required>
+                            <option value="active">نشطة</option>
+                            <option value="inactive">معطلة</option>
+                        </select>
+                        <div class="error-message" id="editTransactionStatusError"></div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="editTransactionTypes">نوع الواجهه للتطبيق *</label>
+                        <select id="editTransactionTypes" name="request_type" required>
+                                    <option value="normal_request">ادخالات تلقائية</option>
+                                    <option value="subject_request">ادخالات المواد</option>
+                                    <option value="collages_request">ادخالات الكليات</option>
+                        </select>
+                        <div class="error-message" id="editTransactionStatusError"></div>
+                    </div>
+
+                     
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditTransactionModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل المعاملة -->
+    <div id="viewTransactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل المعاملة</h3>
+                <span class="close" onclick="closeViewTransactionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <label>معرف المعاملة:</label>
+                        <span id="viewTransactionId">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>اسم المعاملة:</label>
+                        <span id="viewTransactionName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>كود المعاملة:</label>
+                        <span id="viewTransactionCode">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>نوع واجهة الادخال للطالب:</label>
+                        <span id="viewTransactionRequst">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>مبلغ النظام العام:</label>
+                        <span id="viewTransactionGeneralAmount">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>مبلغ النظام الموازي:</label>
+                        <span id="viewTransactionParallelAmount">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>الحالة:</label>
+                        <span id="viewTransactionStatus">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewTransactionCreatedAt">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>تاريخ آخر تحديث:</label>
+                        <span id="viewTransactionUpdatedAt">-</span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewTransactionModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نماذج إدارة القيود -->
+    
+    <!-- نموذج إضافة/تعديل قيد -->
+    <div id="constraintModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="constraintModalTitle">إضافة قيد جديد</h5>
+                    <button type="button" class="close" onclick="closeConstraintModal()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form id="constraintForm" onsubmit="saveConstraint(event)">
+                    <div class="modal-body">
+                        <input type="hidden" id="constraintId" name="constraint_id">
+                        
+                        <div class="form-group">
+                            <label for="constraintName">اسم القيد *</label>
+                            <input type="text" id="constraintName" name="name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ruleKey">المتغير *</label>
+                            <input type="text" id="ruleKey" name="rule_key" class="form-control" required 
+                                   placeholder="مثال: status, academic_year, gpa">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="ruleOperator">نوع المقارنة *</label>
+                                <select id="ruleOperator" name="rule_operator" class="form-control" required>
+                                    <option value="">اختر نوع المقارنة</option>
+                                    <option value="=">=</option>
+                                    <option value=">">&gt;</option>
+                                    <option value="<">&lt;</option>
+                                    <option value=">=">&gt;=</option>
+                                    <option value="<=">&lt;=</option>
+                                    <option value="!=">!=</option>
+                                    <option value="IN">IN</option>
+                                    <option value="BETWEEN">BETWEEN</option>
+                                    <option value="EXISTS">EXISTS</option>
+                                    <option value="MAX_YEARS">MAX_YEARS</option>
+                                    <option value="MIN_YEARS">MIN_YEARS</option>
+                                    <option value="CONTAINS">CONTAINS</option>
+                                    <option value="STARTS_WITH">STARTS_WITH</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="ruleValue">القيمة *</label>
+                                <input type="text" id="ruleValue" name="rule_value" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ruleValue2">القيمة الثانية (للمقارنات المركبة)</label>
+                            <input type="text" id="ruleValue2" name="rule_value_2" class="form-control">
+                            <small class="form-text text-muted">مطلوبة للمقارنات مثل BETWEEN</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="errorMessage">رسالة الخطأ *</label>
+                            <textarea id="errorMessage" name="error_message" class="form-control" rows="2" required
+                                      placeholder="الرسالة التي ستظهر للطالب عند عدم تحقق الشرط"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contextSource">مصدر البيانات *</label>
+                            <select id="contextSource" name="context_source" class="form-control" required onchange="toggleContextSQL()">
+                                <option value="">اختر مصدر البيانات</option>
+                                <option value="students">جدول الطلاب</option>
+                                <option value="view">عرض (View)</option>
+                                <option value="custom">استعلام مخصص</option>
+                                <option value="procedure">إجراء مخزن</option>
+                            </select>
+                        </div>
+                        
+                        <div id="contextSQLGroup" class="form-group" style="display: none;">
+                            <label for="contextSQL">الاستعلام/العرض/الإجراء *</label>
+                            <textarea id="contextSQL" name="context_sql" class="form-control" rows="3"
+                                      placeholder="SELECT * FROM view_name WHERE condition OR CALL procedure_name()"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="constraintGroupId">المجموعة</label>
+                            <select id="constraintGroupId" name="group_id" class="form-control">
+                                <option value="">بدون مجموعة</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeConstraintModal()">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إدارة مجموعات القيود -->
+    <div id="constraintGroupsModal" class="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5><i class="fas fa-layer-group"></i> إدارة مجموعات القيود</h5>
+                    <button type="button" class="close text-white" onclick="closeConstraintGroupsModal()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- نموذج إضافة مجموعة جديدة -->
+                    <form id="constraintGroupForm" class="mb-4">
+                        <div class="card border-success">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-plus-circle text-success"></i> إضافة مجموعة جديدة</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="groupName"><i class="fas fa-tag"></i> اسم المجموعة *</label>
+                                        <input type="text" id="groupName" name="name" class="form-control" 
+                                               placeholder="أدخل اسم المجموعة" required>
+                                        <small class="form-text text-muted">اسم وصفي للمجموعة (مثل: شروط التخرج)</small>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="groupLogic"><i class="fas fa-code-branch"></i> منطق المجموعة *</label>
+                                        <select id="groupLogic" name="logic" class="form-control" required>
+                                            <option value="AND">🔗 AND (جميع الشروط)</option>
+                                            <option value="OR">🔀 OR (أي شرط)</option>
+                                        </select>
+                                        <small class="form-text text-muted">كيفية تطبيق القيود في المجموعة</small>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-success btn-block">
+                                            <i class="fas fa-plus"></i> إضافة
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- جدول المجموعات الموجودة -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fas fa-list"></i> المجموعات الموجودة</h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th><i class="fas fa-hashtag"></i> المعرف</th>
+                                            <th><i class="fas fa-tag"></i> اسم المجموعة</th>
+                                            <th><i class="fas fa-code-branch"></i> المنطق</th>
+                                            <th><i class="fas fa-chart-bar"></i> عدد القيود</th>
+                                            <th><i class="fas fa-toggle-on"></i> الحالة</th>
+                                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="constraintGroupsTableBody">
+                                        <!-- سيتم ملء البيانات ديناميكياً -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" onclick="closeConstraintGroupsModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج ربط القيود بالمعاملات -->
+    <div id="constraintMappingModal" class="modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5><i class="fas fa-link"></i> ربط القيود بالمعاملات</h5>
+                    <button type="button" class="close text-white" onclick="closeConstraintMappingModal()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form id="constraintMappingForm" onsubmit="saveConstraintMapping(event)">
+                    <div class="modal-body">
+                        <!-- اختيار نوع المعاملة -->
+                        <div class="card border-info mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-clipboard-list text-info"></i> اختيار نوع المعاملة</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-0">
+                                    <label for="transactionTypeSelect"><i class="fas fa-project-diagram"></i> نوع المعاملة *</label>
+                                    <select id="transactionTypeSelect" name="transaction_type_id" class="form-control" required onchange="loadConstraintMapping()">
+                                        <option value="">🔍 اختر نوع المعاملة لربط القيود بها</option>
+                                    </select>
+                                    <small class="form-text text-muted">اختر نوع المعاملة لعرض وإدارة القيود المرتبطة بها</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم إدارة القيود -->
+                        <div class="row">
+                            <!-- جدول القيود المتاحة -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">القيود المتاحة (<span id="availableCount">0</span>)</h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-sm table-hover mb-0">
+                                                <thead class="thead-light sticky-top">
+                                                    <tr>
+                                                        <th>اسم القيد</th>
+
+                                                        <th>إجراء</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="availableConstraintsTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">
+                                                            اختر نوع معاملة لعرض القيود المتاحة
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- جدول القيود المرتبطة -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">القيود المرتبطة (<span id="linkedCount">0</span>)</h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-sm table-hover mb-0">
+                                                <thead class="thead-light sticky-top">
+                                                    <tr>
+                                                        <th>اسم القيد</th>
+                                                        <th>إجراء</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="linkedConstraintsTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">
+                                                            اختر نوع معاملة لعرض القيود المرتبطة
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- معلومات إضافية -->
+                        <div class="alert alert-info mt-3" role="alert">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>نصائح:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>اضغط على القيد في قائمة "المتاحة" لنقله إلى "المرتبطة"</li>
+                                <li>اضغط على القيد في قائمة "المرتبطة" لإزالة الربط</li>
+                                <li>سيتم حفظ التغييرات تلقائياً عند الضغط على "حفظ"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" onclick="closeConstraintMappingModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج اختبار القيود -->
+    <div id="testConstraintsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>اختبار القيود</h5>
+                    <button type="button" class="close" onclick="closeTestConstraintsModal()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form id="testConstraintsForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="testStudentId">معرف الطالب *</label>
+                            <input type="number" id="testStudentId" name="student_id" class="form-control" required
+                                   placeholder="أدخل معرف الطالب">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="testTransactionType">نوع المعاملة *</label>
+                            <select id="testTransactionType" name="transaction_type_id" class="form-control" required>
+                                <option value="">اختر نوع المعاملة</option>
+                            </select>
+                        </div>
+                        
+                        <div id="testResults" style="display: none;">
+                            <!-- سيتم عرض نتائج الاختبار هنا -->
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeTestConstraintsModal()">إغلاق</button>
+                        <button type="submit" class="btn btn-primary">اختبار القيود</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نوافذ إدارة الخطوات -->
+    
+    <!-- نافذة إضافة خطوة جديدة -->
+    <div id="addStepModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة خطوة جديدة</h3>
+                <span class="close" onclick="closeAddStepModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addStepForm" onsubmit="addStepData(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addStepTransactionType">نوع المعاملة *</label>
+                            <select id="addStepTransactionType" name="transaction_type_id" required>
+                                <option value="">اختر نوع المعاملة</option>
+                            </select>
+                            <div class="error-message" id="addStepTransactionTypeError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addStepOrder">ترتيب الخطوة *</label>
+                            <input type="number" id="addStepOrder" name="step_order" required min="1" placeholder="مثل: 1">
+                            <div class="error-message" id="addStepOrderError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addStepName">اسم الخطوة *</label>
+                            <input type="text" id="addStepName" name="step_name" required placeholder="مثل: استلام الطلب">
+                            <div class="error-message" id="addStepNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addStepRole">الدور المسؤول *</label>
+                            <select id="addStepRole" name="responsible_role" required>
+                                <option value="">اختر الدور</option>
+                                <option value="student">طالب</option>
+                                <option value="student_affairs">شؤون طلاب</option>
+                                <option value="department_head">رئيس قسم</option>
+                                <option value="dean">عميد</option>
+                                <option value="finance">مالية</option>
+                                <option value="control">مراقبة</option>
+                                <option value="archive">أرشيف</option>
+                            </select>
+                            <div class="error-message" id="addStepRoleError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addStepDuration">المدة المتوقعة (بالأيام)</label>
+                            <input type="number" id="addStepDuration" name="estimated_duration_days" min="1" placeholder="مثل: 3">
+                            <div class="error-message" id="addStepDurationError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addStepRequired">نوع الخطوة *</label>
+                            <select id="addStepRequired" name="is_required" required>
+                                <option value="1">مطلوبة</option>
+                                <option value="0">اختيارية</option>
+                            </select>
+                            <div class="error-message" id="addStepRequiredError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addStepDescription">وصف الخطوة</label>
+                        <textarea id="addStepDescription" name="step_description" rows="3" placeholder="وصف مفصل للخطوة..."></textarea>
+                        <div class="error-message" id="addStepDescriptionError"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة الخطوة
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddStepModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الخطوة -->
+    <div id="editStepModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل الخطوة</h3>
+                <span class="close" onclick="closeEditStepModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editStepForm" onsubmit="updateStepData(event)">
+                    <input type="hidden" id="editStepId" name="step_id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStepTransactionType">نوع المعاملة *</label>
+                            <select id="editStepTransactionType" name="transaction_type_id" required>
+                                <option value="">اختر نوع المعاملة</option>
+                            </select>
+                            <div class="error-message" id="editStepTransactionTypeError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStepOrder">ترتيب الخطوة *</label>
+                            <input type="number" id="editStepOrder" name="step_order" required min="1" placeholder="مثل: 1">
+                            <div class="error-message" id="editStepOrderError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStepName">اسم الخطوة *</label>
+                            <input type="text" id="editStepName" name="step_name" required placeholder="مثل: استلام الطلب">
+                            <div class="error-message" id="editStepNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStepRole">الدور المسؤول *</label>
+                            <select id="editStepRole" name="responsible_role" required>
+                                <option value="">اختر الدور</option>
+                                <option value="student">طالب</option>
+                                <option value="student_affairs">شؤون طلاب</option>
+                                <option value="department_head">رئيس قسم</option>
+                                <option value="dean">عميد</option>
+                                <option value="finance">مالية</option>
+                                <option value="control">مراقبة</option>
+                                <option value="archive">أرشيف</option>
+                            </select>
+                            <div class="error-message" id="editStepRoleError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStepDuration">المدة المتوقعة (بالأيام)</label>
+                            <input type="number" id="editStepDuration" name="estimated_duration_days" min="1" placeholder="مثل: 3">
+                            <div class="error-message" id="editStepDurationError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStepRequired">نوع الخطوة *</label>
+                            <select id="editStepRequired" name="is_required" required>
+                                <option value="1">مطلوبة</option>
+                                <option value="0">اختيارية</option>
+                            </select>
+                            <div class="error-message" id="editStepRequiredError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editStepDescription">وصف الخطوة</label>
+                        <textarea id="editStepDescription" name="step_description" rows="3" placeholder="وصف مفصل للخطوة..."></textarea>
+                        <div class="error-message" id="editStepDescriptionError"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditStepModal()">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل الخطوة -->
+    <div id="viewStepModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل الخطوة</h3>
+                <span class="close" onclick="closeViewStepModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="details-container">
+                    <div class="detail-item">
+                        <label>معرف الخطوة:</label>
+                        <span id="viewStepId">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>نوع المعاملة:</label>
+                        <span id="viewStepTransactionType">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>ترتيب الخطوة:</label>
+                        <span id="viewStepOrder">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>اسم الخطوة:</label>
+                        <span id="viewStepName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>الدور المسؤول:</label>
+                        <span id="viewStepRole">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>المدة المتوقعة:</label>
+                        <span id="viewStepDuration">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>نوع الخطوة:</label>
+                        <span id="viewStepRequired">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>الحالة:</label>
+                        <span id="viewStepStatus">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>وصف الخطوة:</label>
+                        <span id="viewStepDescription">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>تاريخ الإنشاء:</label>
+                        <span id="viewStepCreatedAt">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>تاريخ آخر تحديث:</label>
+                        <span id="viewStepUpdatedAt">-</span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeViewStepModal()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/page_guard.js"></script>
+    <script src="../js/transaction.js"></script>
+    <script src="../js/transaction_modals.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/constraints_admin.js"></script>
+</body>
+</html>

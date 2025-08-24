@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إرسال الطلبات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار إرسال الطلبات - Student API</h1>
+        
+        <form id="submitForm">
+            <div class="form-group">
+                <label for="student_id">رقم الطالب:</label>
+                <input type="text" id="student_id" value="2021001" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="internal_student_id">المعرف الداخلي للطالب:</label>
+                <input type="number" id="internal_student_id" value="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="transaction_type_id">معرف نوع المعاملة:</label>
+                <input type="number" id="transaction_type_id" value="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">وصف الطلب:</label>
+                <textarea id="description" rows="4" required>طلب اختبار من صفحة الاختبار</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="academic_year">السنة الدراسية:</label>
+                <input type="text" id="academic_year" value="2024-2025">
+            </div>
+            
+            <div class="form-group">
+                <label for="semester">الفصل الدراسي:</label>
+                <select id="semester">
+                    <option value="الأول">الأول</option>
+                    <option value="الثاني">الثاني</option>
+                </select>
+            </div>
+            
+            <button type="submit">إرسال الطلب</button>
+            <button type="button" onclick="clearResult()">مسح النتيجة</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('submitForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'جاري الإرسال...';
+            resultDiv.className = 'result';
+            
+            // جمع البيانات من النموذج
+            const requestData = {
+                action: 'submit',
+                student_id: document.getElementById('student_id').value,
+                internal_student_id: parseInt(document.getElementById('internal_student_id').value),
+                transaction_type_id: parseInt(document.getElementById('transaction_type_id').value),
+                description: document.getElementById('description').value,
+                academic_year: document.getElementById('academic_year').value,
+                semester: document.getElementById('semester').value
+            };
+            
+            try {
+                console.log('إرسال البيانات:', requestData);
+                
+                const response = await fetch('backend/api/student/requests.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                console.log('حالة الاستجابة:', response.status);
+                console.log('رؤوس الاستجابة:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('نص الاستجابة الخام:', responseText);
+                
+                // محاولة تحليل JSON
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('البيانات المحللة:', result);
+                } catch (parseError) {
+                    console.error('خطأ في تحليل JSON:', parseError);
+                    throw new Error('استجابة غير صحيحة من الخادم: ' + responseText);
+                }
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `نجح الإرسال!\n\nالرسالة: ${result.message}\n\nالبيانات: ${JSON.stringify(result.data, null, 2)}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `فشل الإرسال!\n\nالرسالة: ${result.message}`;
+                    resultDiv.className = 'result error';
+                }
+                
+            } catch (error) {
+                console.error('خطأ في الطلب:', error);
+                resultDiv.innerHTML = `خطأ في الطلب:\n\n${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        });
+        
+        function clearResult() {
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('result').className = '';
+        }
+    </script>
+</body>
+</html>
